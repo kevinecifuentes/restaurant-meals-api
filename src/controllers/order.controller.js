@@ -21,6 +21,8 @@ exports.createOrder = catchAsync(async (req, res, next) => {
   })
 })
 
+exports.findMyOrders = catchAsync(async (req, res, next) => {})
+
 //delete order
 exports.deleteOrder = catchAsync(async (req, res, next) => {
   const { order } = req

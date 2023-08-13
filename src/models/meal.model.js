@@ -16,13 +16,13 @@ const Meal = db.define('meals', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  restauranId: {
+  restaurantId: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
   status: {
     type: DataTypes.ENUM('active', 'disabled'),
-    allowNull: false,
+    defaultValue: 'active',
   },
 })
 

@@ -10,7 +10,7 @@ const router = express.Router()
 
 router.post('/', orderControllers.createOrder)
 
-// router.get('/me', orderControllers.findMyOrders)
+/* router.get('/me', orderControllers.findMyOrders) */
 
 router
   .route('/:id')

@@ -3,14 +3,13 @@ const User = require('./../models/user.model')
 const { Order } = require('./../models/order.model')
 const catchAsync = require('./../utils/catchAsync')
 
+//find details about one order
 exports.findOneUserOrder = catchAsync(async (req, res, next) => {
   const { id } = req.params
-})
 
-//get all orders
-exports.findAllUserOrder = catchAsync(async (req, res, next) => {
-  const orders = await Order.findAll({
+  const order = await Order.findOne({
     where: {
+      id,
       status: 'active',
     },
     include: [
@@ -20,45 +19,72 @@ exports.findAllUserOrder = catchAsync(async (req, res, next) => {
     ],
   })
 
-  if (orders.length === 0) {
-    return next(new AppError('In the moment, there are not users creted', 404))
+  if (!order) next(new AppError(`order with id: ${id} not found`, 404))
+
+  return res.status(200).json({
+    status: 'success',
+    order,
+  })
+})
+
+//get all orders made by users
+exports.findAllUserOrder = catchAsync(async (req, res, next) => {
+  const users = await User.findAll({
+    where: {
+      status: 'active',
+    },
+    attributes: ['id', 'name', 'email', 'role'],
+    include: [
+      {
+        model: Order,
+        where: {
+          status: ['cancelled', 'active', 'completed'],
+        },
+        attributes: {
+          exclude: ['userId'],
+        },
+      },
+    ],
+  })
+
+  if (users.length === 0) {
+    return next(
+      new AppError('There are not orders creted for this user yet', 404)
+    )
   }
 
   return res.status(200).json({
     status: 'success',
-    result: orders.length,
-    orders,
+    result: users.length,
+    users,
   })
 })
 
-exports.createUser = async (req, res) => {
-  try {
-    const { name, email, password } = req.body
+//create user
+exports.createUser = catchAsync(async (req, res) => {
+  const { name, email, password } = req.body
 
-    const user = await User.create({
-      name: name.toLowerCase().trim(),
-      email: email.toLowerCase().trim(),
-      password,
-    })
+  const user = await User.create({
+    name: name.toLowerCase().trim(),
+    email: email.toLowerCase().trim(),
+    password,
+  })
 
-    return res.status(200).json({
-      status: 'success',
-      message: 'user has been created',
-      user,
-    })
-  } catch (err) {
-    console.log(err)
+  return res.status(200).json({
+    status: 'success',
+    message: 'user has been created',
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt,
+    },
+  })
+})
 
-    res.status(500).json({
-      status: 'fail',
-      message: 'something went wrong',
-      err,
-    })
-  }
-}
-
-exports.updateUserOrder = catchAsync(async (req, res, next) => {
-  /*  try { */
+//update user profile
+exports.updateUser = catchAsync(async (req, res, next) => {
   const { user } = req
   const { name, email } = req.body
 
@@ -72,22 +98,16 @@ exports.updateUserOrder = catchAsync(async (req, res, next) => {
     message: 'user updated',
     user,
   })
-  /*  } catch (err) {
-    console.log(err)
-    res.status(500).json({
-      status: 'fail',
-      message: 'something went wrong',
-    })
-  } */
 })
 
-exports.deleteUserOrder = catchAsync(async (req, res, next) => {
+//delete user
+exports.deleteUser = catchAsync(async (req, res, next) => {
   const { user } = req
 
   await user.update({ status: 'disabled' })
 
   return res.status(200).json({
-    status: 'succes',
+    status: 'success',
     message: 'user has been deleted',
   })
 })

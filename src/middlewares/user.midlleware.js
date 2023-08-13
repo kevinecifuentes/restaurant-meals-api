@@ -6,15 +6,13 @@ exports.validUser = async (req, res, next) => {
     const { id } = req.params
 
     const user = await User.findOne({
-      where: { id },
-      status: 'active',
+      where: {
+        id,
+        status: 'active',
+      },
     })
     if (!user) {
       return next(new AppError(`User with id: ${id} not found`, 404))
-      /* return res.status(404).json({
-        status: 'error',
-        message: `User with ${id} not found`,
-      }) */
     }
     req.user = user
     next()
