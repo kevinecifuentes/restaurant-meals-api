@@ -26,4 +26,4 @@ const Meal = db.define('meals', {
   },
 })
 
-module.exports = Meal
+module.exports = { Meal }

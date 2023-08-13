@@ -4,7 +4,7 @@ const morgan = require('morgan')
 
 //routes
 const userRoutes = require('./routes/user.route')
-// const authRoute = require('./routes/auth.route')
+const orderRoutes = require('./routes/order.route')
 
 const app = express()
 
@@ -18,6 +18,7 @@ const globalErrorHandler = require('./controllers/error.controller')
 
 //user routes
 app.use('/api/v1/users', userRoutes)
+app.use('/api/v1/orders', orderRoutes)
 
 app.all('*', (req, res, next) => {
   return next(

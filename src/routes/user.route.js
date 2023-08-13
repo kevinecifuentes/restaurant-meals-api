@@ -4,7 +4,6 @@ const express = require('express')
 const userController = require('./../controllers/user.controller')
 
 //Middlewares
-
 const userMiddlware = require('./../middlewares/user.midlleware')
 
 const router = express.Router()

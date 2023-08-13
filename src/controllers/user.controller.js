@@ -1,25 +1,33 @@
 const AppError = require('../utils/appError')
 const User = require('./../models/user.model')
+const { Order } = require('./../models/order.model')
 const catchAsync = require('./../utils/catchAsync')
 
-exports.findOneUserOrder = catchAsync(async (req, res) => {})
+exports.findOneUserOrder = catchAsync(async (req, res, next) => {
+  const { id } = req.params
+})
 
 //get all orders
 exports.findAllUserOrder = catchAsync(async (req, res, next) => {
-  const users = await User.findAll({
+  const orders = await Order.findAll({
     where: {
       status: 'active',
     },
+    include: [
+      {
+        model: User,
+      },
+    ],
   })
 
-  if (users.length === 0) {
+  if (orders.length === 0) {
     return next(new AppError('In the moment, there are not users creted', 404))
   }
 
   return res.status(200).json({
     status: 'success',
-    result: users.length,
-    users,
+    result: orders.length,
+    orders,
   })
 })
 

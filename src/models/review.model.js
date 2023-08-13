@@ -3,18 +3,18 @@ const { db } = require('../database/config')
 
 const Review = db.define('reviews', {
   id: {
+    type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
     autoIncrement: true,
-    type: Datatypes.INTEGER,
   },
 
   userId: {
-    type: Datatypes.INTEGER,
-    allowNull: fasle,
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   comment: {
-    type: Datatypes.TEXT,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
   restauranId: {
@@ -23,9 +23,9 @@ const Review = db.define('reviews', {
   },
 
   rating: {
-    type: Datatypes.INTEGER,
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
 })
 
-module.exports = Review
+module.exports = { Review }
