@@ -8,8 +8,8 @@ const initModel = () => {
   User.hasMany(Order, { foreignKey: 'userId' })
   Order.belongsTo(User, { foreignKey: 'userId' })
 
-  Order.hasOne(Meal, { foreignKey: 'mealId' })
-  Meal.hasOne(Meal, { foreignKey: 'mealId' })
+  Order.hasOne(Meal, { foreignKey: 'id' })
+  Meal.hasOne(Order, { foreignKey: 'mealId' })
 
   Restaurant.hasMany(Meal, { foreignKey: 'restaurantId' })
   Meal.belongsTo(Restaurant, { foreignKey: 'restaurantId' })

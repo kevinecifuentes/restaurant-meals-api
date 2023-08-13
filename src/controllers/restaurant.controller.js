@@ -1,3 +1,4 @@
+const { Meal } = require('../models/meal.model')
 const catchAsync = require('../utils/catchAsync')
 const { Restaurant } = require('./../models/restaurant.model')
 
@@ -15,7 +16,23 @@ exports.createRestaurant = catchAsync(async (req, res) => {
 })
 
 //find all restaurants
-exports.findAllRestaurants = catchAsync(async (req, res) => {})
+exports.findAllRestaurants = catchAsync(async (req, res) => {
+  const restaurants = await Restaurant.findAll({
+    where: {
+      status: 'active',
+    },
+    include: [
+      {
+        model: Meal,
+      }
+    ]
+  })
+
+  res.status(200).json({
+    status: 'success',
+    restaurants,
+  })
+})
 
 //find a restaurant
 exports.findOneRestaurants = catchAsync(async (req, res) => {})
