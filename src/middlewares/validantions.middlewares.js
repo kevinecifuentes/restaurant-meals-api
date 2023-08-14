@@ -53,14 +53,14 @@ exports.validationUpdateUser = [
 
 exports.validationCreateRestaurants = [
   body('name').notEmpty().withMessage('Name is Requerid'),
-  body('addres').notEmpty().withMessage('Addres is Requerid'),
+  body('address').notEmpty().withMessage('Addres is Requerid'),
   body('rating').notEmpty().withMessage('Rating is Requerid'),
   validFields,
 ];
 
 exports.validationUpdateRestaurants = [
   body('name').notEmpty().withMessage('Name is Requerid'),
-  body('addres').notEmpty().withMessage('Addres is Requerid'),
+  body('address').notEmpty().withMessage('Addres is Requerid'),
 ];
 
 //==================================================validaciones de orden===========================================================//
