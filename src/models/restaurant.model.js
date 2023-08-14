@@ -1,5 +1,5 @@
-const { DataTypes } = require('sequelize')
-const { db } = require('../database/config')
+const { DataTypes } = require('sequelize');
+const { db } = require('../database/config');
 
 const Restaurant = db.define('restaurants', {
   id: {
@@ -24,6 +24,6 @@ const Restaurant = db.define('restaurants', {
     type: DataTypes.ENUM('active', 'disabled'),
     defaultValue: 'active',
   },
-})
+});
 
-module.exports = { Restaurant }
+module.exports = { Restaurant };

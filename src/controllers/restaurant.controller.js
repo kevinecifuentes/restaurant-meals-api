@@ -1,12 +1,15 @@
 const { Meal } = require('../models/meal.model')
 const catchAsync = require('../utils/catchAsync')
 const { Restaurant } = require('./../models/restaurant.model')
+const AppError = require('./../utils/appError')
 
 //create a restaurant
-exports.createRestaurant = catchAsync(async (req, res) => {
+exports.createRestaurant = catchAsync(async (req, res, next) => {
   const { name, address, rating } = req.body
 
   const restaurant = await Restaurant.create({ name, address, rating })
+
+   if(rating < 1 || rating > 5) next(new AppError('Rating only accept numbers between 1 and 5', 401))
 
   res.status(200).json({
     status: 'success',

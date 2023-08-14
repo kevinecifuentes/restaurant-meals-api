@@ -12,13 +12,13 @@ const generateJWT = (id) => {
       },
       (err, token) => {
         if (err) {
-          console.log(err)
-          reject(err)
+          console.log(err);
+          reject(err);
         }
 
-        resolve(token)
+        resolve(token);
       }
-    )
+    );
   })
 }
 
