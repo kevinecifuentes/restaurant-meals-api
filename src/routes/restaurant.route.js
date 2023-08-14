@@ -1,6 +1,7 @@
 const express = require('express')
 
 //middlewares
+const restaurantMiddlewares = require('./../middlewares/restaurant.middleware')
 
 //controllers
 const restaurantControllers = require('./../controllers/restaurant.controller')
@@ -14,7 +15,10 @@ router
 
 router
   .route('/:id')
-  .get(restaurantControllers.findOneRestaurants)
+  .get(
+    restaurantMiddlewares.validRestaurant,
+    restaurantControllers.findOneRestaurants
+  )
   .patch(restaurantControllers.updateRestaurant)
   .delete(restaurantControllers.deleteRestaurant)
 

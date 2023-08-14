@@ -3,7 +3,6 @@ const catchAsync = require('../utils/catchAsync')
 const { Meal } = require('./../models/meal.model')
 const { Restaurant } = require('./../models/restaurant.model')
 
-
 //add new meal to a restaurant
 exports.createMeal = catchAsync(async (req, res, next) => {
   const { id } = req.params
@@ -40,17 +39,13 @@ exports.finAllMeals = catchAsync(async (req, res, next) => {
 })
 
 //get one meal
-exports.finOneMeal = catchAsync(async(req, res, next) => {
+exports.finOneMeal = catchAsync(async (req, res, next) => {
+  const { meal } = req
 
-  const {id}= req.params
-  const meal= await Meal.findOne({
-    where: {
-      id,
-      status: 'active'
-    }
+  res.status(200).json({
+    status: 'succes',
+    meal,
   })
-
-  if(!meal) next(new AppError(`Meal with id: ${id}not found`, 400))
 })
 
 //update one meal

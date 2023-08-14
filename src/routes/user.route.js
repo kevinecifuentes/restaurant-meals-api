@@ -6,6 +6,7 @@ const userController = require('./../controllers/user.controller')
 //Middlewares
 const userMiddlware = require('./../middlewares/user.midlleware')
 const validationsMiddleware = require('./../middlewares/validantions.middlewares')
+const protectMiddleware = require('../middlewares/protect.middleware')
 
 const router = express.Router()
 
@@ -15,7 +16,9 @@ router
   .post(validationsMiddleware.validationCreateUser, userController.createUser)
 
 //signin
-// router.route('/signin').post(userController.createUserOrder)
+router.route('/login').post(userController.loginUser)
+
+router.use(protectMiddleware.protect)
 
 router.route('/orders').get(userController.findAllUserOrder)
 

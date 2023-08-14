@@ -5,13 +5,13 @@ const AppError = require('../utils/appError')
 
 //create order
 exports.createOrder = catchAsync(async (req, res, next) => {
-  const { quantity, mealId, userId, totalPrice } = req.body
+  const { quantity, mealId } = req.body
+  const { id: userId } = req.sessionUser
 
   const order = await Order.create({
     quantity,
     mealId,
     userId,
-    totalPrice,
   })
 
   return res.status(200).json({

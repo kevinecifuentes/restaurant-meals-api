@@ -1,6 +1,7 @@
 const express = require('express')
 
 //middlewares
+const mealMiddleware = require('./../middlewares/meal.middleawre')
 
 //controllers
 const mealControllers = require('./../controllers/meal.controller')
@@ -12,7 +13,7 @@ router.get('/', mealControllers.finAllMeals)
 router
   .route('/:id')
   .post(mealControllers.createMeal)
-  .get(mealControllers.finOneMeal)
+  .get(mealMiddleware.validMeal, mealControllers.finOneMeal)
   .patch(mealControllers.updateMeal)
   .delete(mealControllers.deleteMeal)
 

@@ -10,17 +10,15 @@ const Order = db.define('orders', {
   mealId: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    /* field: 'meal_id', */
   },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    /* field: 'user_id', */
   },
   totalPrice: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    /* field: 'total_price', */
+    defaultValue: 5000,
   },
   quantity: {
     type: DataTypes.INTEGER,

@@ -24,8 +24,8 @@ exports.findAllRestaurants = catchAsync(async (req, res) => {
     include: [
       {
         model: Meal,
-      }
-    ]
+      },
+    ],
   })
 
   res.status(200).json({
@@ -35,7 +35,14 @@ exports.findAllRestaurants = catchAsync(async (req, res) => {
 })
 
 //find a restaurant
-exports.findOneRestaurants = catchAsync(async (req, res) => {})
+exports.findOneRestaurants = catchAsync(async (req, res, next) => {
+  const { restaurant } = req
+
+  res.status(200).json({
+    status: 'success',
+    restaurant,
+  })
+})
 
 //update a review for a restuarant
 exports.updateReviewToRestaurant = catchAsync(async (req, res) => {})
