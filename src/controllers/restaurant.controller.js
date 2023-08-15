@@ -21,7 +21,7 @@ exports.createRestaurant = catchAsync(async (req, res, next) => {
 });
 
 //find all restaurants
-exports.findAllRestaurants = catchAsync(async (req, res) => {
+exports.findAllRestaurants = catchAsync(async (req, res, next) => {
   const restaurants = await Restaurant.findAll({
     where: {
       status: 'active',
@@ -29,6 +29,11 @@ exports.findAllRestaurants = catchAsync(async (req, res) => {
     attributes: {
       exclude: ['status', 'createdAt', 'updatedAt'],
     },
+    include: [
+      {
+        model: Review,
+      },
+    ],
   });
 
   res.status(200).json({
@@ -39,29 +44,42 @@ exports.findAllRestaurants = catchAsync(async (req, res) => {
 
 //find a restaurant
 exports.findOneRestaurants = catchAsync(async (req, res, next) => {
-  const { restaurant } = req;
+  const { id } = req.params;
+
+  const restaurant = await Restaurant.findOne({
+    where: {
+      id,
+      status: 'active',
+    },
+    attributes: {
+      exclude: ['status', 'createdAt', 'updatedAt'],
+    },
+    include: [
+      {
+        model: Review,
+        attributes: {
+          exclude: ['status'],
+        },
+      },
+    ],
+  });
 
   res.status(200).json({
     status: 'success',
-    restaurant: {
-      id: restaurant.id,
-      name: restaurant.name,
-      address: restaurant.address,
-      rating: restaurant.rating,
-    },
+    restaurant,
   });
 });
 
 //update a restaurant
 exports.updateRestaurant = catchAsync(async (req, res, next) => {
   const { restaurant } = req;
- 
-  const { name, address, } = req.body;
+
+  const { name, address } = req.body;
 
   await restaurant.update({
     name,
     address,
-  } )
+  });
 
   res.status(200).json({
     status: 'success',
@@ -71,7 +89,7 @@ exports.updateRestaurant = catchAsync(async (req, res, next) => {
 });
 
 //delete a restaurant
-exports.deleteRestaurant = catchAsync(async (req, res) => {
+exports.deleteRestaurant = catchAsync(async (req, res, next) => {
   const { restaurant } = req;
 
   await restaurant.update({
@@ -87,18 +105,20 @@ exports.deleteRestaurant = catchAsync(async (req, res) => {
 //===========================================reviews=============================================//
 
 // create review for a restaurant
-exports.createReviewToRestaurant = catchAsync(async (req, res, next) => { 
-
-  const { comment, rating} = req.body;
-  const {id: restaurantId} = req.params
-  const { id: userId } = req.sessionUser
+exports.createReviewToRestaurant = catchAsync(async (req, res, next) => {
+  const { comment, rating } = req.body;
+  const { id: restaurantId } = req.params;
+  const { id: userId } = req.sessionUser;
 
   const review = await Review.create({
     comment,
-    rating, 
-    restaurantId, 
+    rating,
+    restaurantId,
     userId,
   });
+
+  if (rating < 1 || rating > 5)
+    next(new AppError('Rating only accept numbers between 1 and 5', 401));
 
   res.status(200).json({
     status: 'success',
@@ -108,9 +128,17 @@ exports.createReviewToRestaurant = catchAsync(async (req, res, next) => {
 });
 
 //update a review for a restuarant
-exports.updateReviewToRestaurant = catchAsync(async (req, res, next) => {});
+exports.updateReviewToRestaurant = catchAsync(async (req, res, next) => {
+  const { review } = req;
+  const { comment, rating } = req.body;
+
+  await review.update({ comment, rating });
+
+  return res.status(200).json({
+    status: 'success',
+    message: 'restaurant has been updated',
+  });
+});
 
 //delete a review reataurant
-exports.deleteReviewToRestaurant = catchAsync(async (req, res, next) => { });
-
-
+exports.deleteReviewToRestaurant = catchAsync(async (req, res, next) => {});

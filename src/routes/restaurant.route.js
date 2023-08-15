@@ -7,6 +7,7 @@ const validationMiddlewares = require('./../middlewares/validantions.middlewares
 
 //controllers
 const restaurantControllers = require('./../controllers/restaurant.controller');
+const reviewMiddlewares = require('./../middlewares/review.middleware');
 
 const router = express.Router();
 
@@ -47,7 +48,10 @@ router
 
 router
   .route('/reviews/:restaurantId/:id')
-  .patch(restaurantControllers.updateReviewToRestaurant)
+  .patch(
+    reviewMiddlewares.findOneReview,
+    restaurantControllers.updateReviewToRestaurant
+  )
   .delete(restaurantControllers.deleteReviewToRestaurant);
 
 module.exports = router;
