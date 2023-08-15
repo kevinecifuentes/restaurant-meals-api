@@ -87,7 +87,7 @@ exports.findOneUserOrder = catchAsync(async (req, res, next) => {
 
 //create user
 exports.createUser = catchAsync(async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
   const salt = await bcrypt.genSalt(12);
   const encryptedPassword = await bcrypt.hash(password, salt);
@@ -96,6 +96,7 @@ exports.createUser = catchAsync(async (req, res, next) => {
     name: name.toLowerCase().trim(),
     email: email.toLowerCase().trim(),
     password: encryptedPassword,
+    role,
   });
 
   const token = await generateJWT(user.id);

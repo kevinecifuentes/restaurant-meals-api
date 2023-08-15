@@ -1,5 +1,5 @@
-const { Datatypes, DataTypes } = require('sequelize')
-const { db } = require('../database/config')
+const { DataTypes } = require('sequelize');
+const { db } = require('./../database/config');
 
 const Review = db.define('reviews', {
   id: {
@@ -8,8 +8,11 @@ const Review = db.define('reviews', {
     allowNull: false,
     autoIncrement: true,
   },
-
   userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  restaurantId: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
@@ -17,11 +20,6 @@ const Review = db.define('reviews', {
     type: DataTypes.TEXT,
     allowNull: false,
   },
-  restaurantId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-
   rating: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -30,6 +28,6 @@ const Review = db.define('reviews', {
     type: DataTypes.ENUM('active', 'disabled'),
     defaultValue: 'active',
   },
-})
+});
 
-module.exports = { Review }
+module.exports = Review;

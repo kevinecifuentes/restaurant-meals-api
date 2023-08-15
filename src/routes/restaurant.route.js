@@ -13,31 +13,40 @@ const router = express.Router();
 router
   .route('/')
   .post(
-    protectMiddleware.restrictTo('admin'),
+    protectMiddleware.protect,
     validationMiddlewares.validationCreateRestaurants,
+    protectMiddleware.restrictTo('admin'),
     restaurantControllers.createRestaurant
   )
   .get(protectMiddleware.protect, restaurantControllers.findAllRestaurants);
 
+router.use(protectMiddleware.protect);
+
 router
   .route('/:id')
   .get(
-    protectMiddleware.protect,
     restaurantMiddlewares.validRestaurant,
     restaurantControllers.findOneRestaurants
   )
   .patch(
-    protectMiddleware.restrictTo('admin'),
     validationMiddlewares.validationUpdateRestaurants,
+    protectMiddleware.restrictTo('admin'),
+    restaurantMiddlewares.validRestaurant,
     restaurantControllers.updateRestaurant
   )
   .delete(
+    restaurantMiddlewares.validRestaurant,
     protectMiddleware.restrictTo('admin'),
     restaurantControllers.deleteRestaurant
   );
 
+//create reviews
 router
-  .route('/:restaurantId/:id')
+  .route('/reviews/:id')
+  .post(restaurantControllers.createReviewToRestaurant);
+
+router
+  .route('/reviews/:restaurantId/:id')
   .patch(restaurantControllers.updateReviewToRestaurant)
   .delete(restaurantControllers.deleteReviewToRestaurant);
 

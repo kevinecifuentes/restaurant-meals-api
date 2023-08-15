@@ -2,6 +2,7 @@ const { Meal } = require('../models/meal.model');
 const catchAsync = require('../utils/catchAsync');
 const { Restaurant } = require('./../models/restaurant.model');
 const AppError = require('./../utils/appError');
+const Review = require('./../models/review.model');
 
 //create a restaurant
 exports.createRestaurant = catchAsync(async (req, res, next) => {
@@ -51,14 +52,65 @@ exports.findOneRestaurants = catchAsync(async (req, res, next) => {
   });
 });
 
-//update a review for a restuarant
-exports.updateReviewToRestaurant = catchAsync(async (req, res) => {});
-
 //update a restaurant
-exports.updateRestaurant = catchAsync(async (req, res) => {});
+exports.updateRestaurant = catchAsync(async (req, res, next) => {
+  const { restaurant } = req;
+ 
+  const { name, address, } = req.body;
 
-//delete a review reataurant
-exports.deleteReviewToRestaurant = catchAsync(async (req, res) => {});
+  await restaurant.update({
+    name,
+    address,
+  } )
+
+  res.status(200).json({
+    status: 'success',
+    message: `restaurant ${name} has been updated`,
+    restaurant,
+  });
+});
 
 //delete a restaurant
-exports.deleteRestaurant = catchAsync(async (req, res) => {});
+exports.deleteRestaurant = catchAsync(async (req, res) => {
+  const { restaurant } = req;
+
+  await restaurant.update({
+    status: 'disabled',
+  });
+
+  res.status(200).json({
+    status: 'success',
+    message: `restaurant ${restaurant.name} has been deleted`,
+  });
+});
+
+//===========================================reviews=============================================//
+
+// create review for a restaurant
+exports.createReviewToRestaurant = catchAsync(async (req, res, next) => { 
+
+  const { comment, rating} = req.body;
+  const {id: restaurantId} = req.params
+  const { id: userId } = req.sessionUser
+
+  const review = await Review.create({
+    comment,
+    rating, 
+    restaurantId, 
+    userId,
+  });
+
+  res.status(200).json({
+    status: 'success',
+    message: `review has been created`,
+    review,
+  });
+});
+
+//update a review for a restuarant
+exports.updateReviewToRestaurant = catchAsync(async (req, res, next) => {});
+
+//delete a review reataurant
+exports.deleteReviewToRestaurant = catchAsync(async (req, res, next) => { });
+
+
