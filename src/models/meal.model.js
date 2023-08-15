@@ -23,6 +23,7 @@ const Meal = db.define('meals', {
   status: {
     type: DataTypes.ENUM('active', 'disabled'),
     defaultValue: 'active',
+    allowNull: false,
   },
 })
 

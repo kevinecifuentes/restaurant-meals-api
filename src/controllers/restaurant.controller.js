@@ -132,13 +132,25 @@ exports.updateReviewToRestaurant = catchAsync(async (req, res, next) => {
   const { review } = req;
   const { comment, rating } = req.body;
 
-  await review.update({ comment, rating });
+  const reviewUpdate = await review.update({ comment, rating });
 
   return res.status(200).json({
     status: 'success',
     message: 'restaurant has been updated',
+    reviewUpdate,
   });
 });
 
 //delete a review reataurant
-exports.deleteReviewToRestaurant = catchAsync(async (req, res, next) => {});
+exports.deleteReviewToRestaurant = catchAsync(async (req, res, next) => {
+  const { review } = req;
+
+  await review.update({
+    status: 'disabled',
+  });
+
+  res.status(200).json({
+    status: 'success',
+    message: `review has been deleted`,
+  });
+});

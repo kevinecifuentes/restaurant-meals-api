@@ -23,6 +23,7 @@ const Restaurant = db.define('restaurants', {
   status: {
     type: DataTypes.ENUM('active', 'disabled'),
     defaultValue: 'active',
+    allowNull: false,
   },
 });
 

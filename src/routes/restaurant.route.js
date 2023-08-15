@@ -19,7 +19,7 @@ router
     protectMiddleware.restrictTo('admin'),
     restaurantControllers.createRestaurant
   )
-  .get(protectMiddleware.protect, restaurantControllers.findAllRestaurants);
+  .get(restaurantControllers.findAllRestaurants);
 
 router.use(protectMiddleware.protect);
 
@@ -30,12 +30,14 @@ router
     restaurantControllers.findOneRestaurants
   )
   .patch(
+    protectMiddleware.protect,
     validationMiddlewares.validationUpdateRestaurants,
     protectMiddleware.restrictTo('admin'),
     restaurantMiddlewares.validRestaurant,
     restaurantControllers.updateRestaurant
   )
   .delete(
+    protectMiddleware.protect,
     restaurantMiddlewares.validRestaurant,
     protectMiddleware.restrictTo('admin'),
     restaurantControllers.deleteRestaurant
@@ -44,14 +46,22 @@ router
 //create reviews
 router
   .route('/reviews/:id')
-  .post(restaurantControllers.createReviewToRestaurant);
+  .post(
+    protectMiddleware.protect,
+    restaurantControllers.createReviewToRestaurant
+  );
 
 router
   .route('/reviews/:restaurantId/:id')
   .patch(
+    protectMiddleware.protect,
     reviewMiddlewares.findOneReview,
     restaurantControllers.updateReviewToRestaurant
   )
-  .delete(restaurantControllers.deleteReviewToRestaurant);
+  .delete(
+    protectMiddleware.protect,
+    reviewMiddlewares.findOneReview,
+    restaurantControllers.deleteReviewToRestaurant
+  );
 
 module.exports = router;

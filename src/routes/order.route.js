@@ -13,11 +13,10 @@ router.use(protectMiddleware.protect)
 
 router.post('/', orderControllers.createOrder)
 
-/* router.get('/me', orderControllers.findMyOrders) */
+router.get('/me', orderControllers.findMyOrders)
 
 router
-  .route('/:id')
-  // .patch(orderMiddleware.validOrder, orderControllers.updateOrder)
-  .delete(orderMiddleware.validOrder, orderControllers.deleteOrder)
+  .route('/:id').patch(orderControllers.completeOrder)
+  /* .delete(orderMiddleware.validOrder, orderControllers.deleteOrder) */
 
 module.exports = router
