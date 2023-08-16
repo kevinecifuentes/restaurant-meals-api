@@ -56,12 +56,12 @@ router
   .patch(
     protectMiddleware.protect,
     reviewMiddlewares.findOneReview,
-    restaurantControllers.updateReviewToRestaurant
+    restaurantControllers.updateReview
   )
   .delete(
     protectMiddleware.protect,
     reviewMiddlewares.findOneReview,
-    restaurantControllers.deleteReviewToRestaurant
+    restaurantControllers.deleteReview
   );
 
 module.exports = router;

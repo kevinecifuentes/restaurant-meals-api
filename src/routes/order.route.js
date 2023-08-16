@@ -1,22 +1,21 @@
-const express = require('express')
+const express = require('express');
 
 //controllers
-const orderControllers = require('./../controllers/order.controller')
+const orderControllers = require('./../controllers/order.controller');
 
 //middleware
-const orderMiddleware = require('./../middlewares/order.middlewares')
-const protectMiddleware = require('./../middlewares/protect.middleware')
+const orderMiddleware = require('./../middlewares/order.middlewares');
+const protectMiddleware = require('./../middlewares/protect.middleware');
 
-const router = express.Router()
+const router = express.Router();
 
-router.use(protectMiddleware.protect)
+router.use(protectMiddleware.protect);
 
-router.post('/', orderControllers.createOrder)
+router.post('/', orderControllers.createOrder);
 
-router.get('/me', orderControllers.findMyOrders)
+router.get('/me', orderControllers.findMyOrders);
 
-router
-  .route('/:id').patch(orderControllers.completeOrder)
-  /* .delete(orderMiddleware.validOrder, orderControllers.deleteOrder) */
+router.route('/:id').patch(orderControllers.completeOrder);
+/* .delete(orderMiddleware.validOrder, orderControllers.deleteOrder) */
 
-module.exports = router
+module.exports = router;

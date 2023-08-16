@@ -128,29 +128,52 @@ exports.createReviewToRestaurant = catchAsync(async (req, res, next) => {
 });
 
 //update a review for a restuarant
-exports.updateReviewToRestaurant = catchAsync(async (req, res, next) => {
+exports.updateReview = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
   const { review } = req;
   const { comment, rating } = req.body;
 
+  const restaurant = await Restaurant.findOne({
+    where: {
+      id,
+    },
+  });
+
+  if (restaurant.restaurantId !== restaurant.id) {
+    next(new AppError('error no conciden las relacioanes'), 404);
+  }
+
+  if (!restaurant) next(new AppError('Restaurant not found', 404));
+
+  if (rating < 1 || rating > 5)
+    next(new AppError('Rating only accept numbers between 1 and 5', 401));
+
   const reviewUpdate = await review.update({ comment, rating });
 
-  return res.status(200).json({
-    status: 'success',
-    message: 'restaurant has been updated',
+  res.status(200).json({
+    sttaus: 'succes',
+    message: 'review has been updated',
     reviewUpdate,
   });
 });
 
 //delete a review reataurant
-exports.deleteReviewToRestaurant = catchAsync(async (req, res, next) => {
+exports.deleteReview = catchAsync(async (req, res, next) => {
+  const { restaurantId } = req.params;
   const { review } = req;
 
-  await review.update({
-    status: 'disabled',
+  const restaurant = await Restaurant.findOne({
+    where: {
+      id: restaurantId,
+    },
   });
 
+  if (!restaurant) next(new AppError('Restaurant not found', 404));
+
+  await review.update({ status: 'disabled' });
+
   res.status(200).json({
-    status: 'success',
-    message: `review has been deleted`,
+    sttaus: 'succes',
+    message: 'review has been deleted',
   });
 });

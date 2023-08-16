@@ -10,9 +10,20 @@ exports.createOrder = catchAsync(async (req, res, next) => {
   const { quantity, mealId } = req.body;
   const { id: userId } = req.sessionUser;
 
+  const meal = await Meal.findOne({
+    where: {
+      id: mealId,
+    },
+  });
+
+  if (!meal) next(new AppError('Meal not found', 404));
+
+  const totalPrice = quantity * meal.price;
+
   const order = await Order.create({
     quantity,
     mealId,
+    totalPrice,
     userId,
   });
 
@@ -23,6 +34,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
   });
 });
 
+//find my orders
 exports.findMyOrders = catchAsync(async (req, res, next) => {
   const { id: userId } = req.sessionUser;
 
@@ -45,13 +57,11 @@ exports.findMyOrders = catchAsync(async (req, res, next) => {
 
   return res.status(200).json({
     status: 'success',
-    message: 'Orders has been successfully',
     orders,
   });
 });
 
-//status Completed
-
+//complete order
 exports.completeOrder = catchAsync(async (req, res, next) => {
   const { id: userId } = req.sessionUser;
   const { id: orderId } = req.params;
@@ -68,7 +78,11 @@ exports.completeOrder = catchAsync(async (req, res, next) => {
   }
 
   if (order.status === 'completed') {
-    return next(new AppError('Order already completed', 400));
+    return next(new AppError('This order already completed', 400));
+  }
+
+  if (order.status === 'cancelled') {
+    return next(new AppError('Cancelled order cannot be completed', 400));
   }
 
   const meal = await Meal.findOne({
@@ -93,7 +107,6 @@ exports.completeOrder = catchAsync(async (req, res, next) => {
     order,
   });
 });
-
 
 /* //para eliminar validaremos que el status de la orden sea active de lo contrario enviaremos un error 
 exports.deleteOrder = catchAsync(async (req, res, next) => {
@@ -123,3 +136,11 @@ exports.deleteOrder = catchAsync(async (req, res, next) => {
   });
 });
  */
+
+///reviews/:restaurantId/:id
+
+// {restaurantId}
+
+// findone where {
+//   restaurantId
+// }

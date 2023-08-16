@@ -47,6 +47,7 @@ exports.validationUpdateUser = [
     .withMessage('Email is requerid')
     .isEmail()
     .withMessage('Email must be a corret format'),
+  validFields,
 ];
 
 //=============================================validaciones de restaurants===========================================================//
@@ -61,6 +62,7 @@ exports.validationCreateRestaurants = [
 exports.validationUpdateRestaurants = [
   body('name').notEmpty().withMessage('Name is Requerid'),
   body('address').notEmpty().withMessage('Addres is Requerid'),
+  validFields,
 ];
 
 //==================================================validaciones de orden===========================================================//
@@ -86,9 +88,11 @@ exports.validationCreateMeals = [
     .withMessage('Price is Requerid')
     .isNumeric()
     .withMessage('This field only accept numbers'),
+  validFields,
 ];
 
 exports.validationUpdateMeals = [
   body('name').notEmpty().withMessage('Name is Requerid'),
   body('price').notEmpty().withMessage('Price is Requerid'),
+  validFields,
 ];
