@@ -127,33 +127,33 @@ exports.createReviewToRestaurant = catchAsync(async (req, res, next) => {
   });
 });
 
+//TODO Arreglar bug de que solo me deje actualizar o eliminar la orden si el restaurante está asociado a la review o viceversa, independientemente de si existe o no el restaurant.
 //update a review for a restuarant
 exports.updateReview = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
+  const { restaurantId } = req.params;
   const { review } = req;
   const { comment, rating } = req.body;
 
   const restaurant = await Restaurant.findOne({
     where: {
-      id,
+      id: restaurantId,
+      status: 'active',
     },
   });
 
-  if (restaurant.restaurantId !== restaurant.id) {
-    next(new AppError('error no conciden las relacioanes'), 404);
-  }
-
-  if (!restaurant) next(new AppError('Restaurant not found', 404));
+  if (!restaurant) return next(new AppError('Restaurant not found', 404));
 
   if (rating < 1 || rating > 5)
-    next(new AppError('Rating only accept numbers between 1 and 5', 401));
+    return next(
+      new AppError('Rating only accept numbers between 1 and 5', 401)
+    );
 
-  const reviewUpdate = await review.update({ comment, rating });
+  await review.update({ comment, rating });
 
   res.status(200).json({
     sttaus: 'succes',
     message: 'review has been updated',
-    reviewUpdate,
+    review,
   });
 });
 
@@ -168,7 +168,7 @@ exports.deleteReview = catchAsync(async (req, res, next) => {
     },
   });
 
-  if (!restaurant) next(new AppError('Restaurant not found', 404));
+  if (!restaurant) return next(new AppError('Restaurant not found', 404));
 
   await review.update({ status: 'disabled' });
 

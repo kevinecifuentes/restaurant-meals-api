@@ -1,22 +1,22 @@
-const AppError = require("../utils/appError");
-const User = require("./../models/user.model");
-const { Order } = require("./../models/order.model");
-const catchAsync = require("./../utils/catchAsync");
-const bcrypt = require("bcryptjs");
-const generateJWT = require("../utils/jwt");
-const { Meal } = require("../models/meal.model");
-const { Restaurant } = require("../models/restaurant.model");
+const AppError = require('../utils/appError');
+const User = require('./../models/user.model');
+const { Order } = require('./../models/order.model');
+const catchAsync = require('./../utils/catchAsync');
+const bcrypt = require('bcryptjs');
+const generateJWT = require('../utils/jwt');
+const { Meal } = require('../models/meal.model');
+const { Restaurant } = require('../models/restaurant.model');
 
-//get all orders made by users
+//get all orders mades by users
 exports.findAllUserOrder = catchAsync(async (req, res, next) => {
   const { id } = req.sessionUser;
 
   const users = await User.findAll({
     where: {
-      status: "active",
+      status: 'active',
       id,
     },
-    attributes: ["id", "name", "email", "role"],
+    attributes: ['id', 'name', 'email', 'role'],
     include: [
       {
         model: Order,
@@ -25,16 +25,16 @@ exports.findAllUserOrder = catchAsync(async (req, res, next) => {
             model: Meal,
             include: [
               {
-                model: Restaurant
-              }
-            ]
+                model: Restaurant,
+              },
+            ],
           },
         ],
         where: {
-          status: ["cancelled", "active", "completed"],
+          status: ['cancelled', 'active', 'completed'],
         },
         attributes: {
-          exclude: ["userId"],
+          exclude: ['userId'],
         },
       },
     ],
@@ -42,12 +42,12 @@ exports.findAllUserOrder = catchAsync(async (req, res, next) => {
 
   if (users.length === 0) {
     return next(
-      new AppError("There are not orders creted for this user yet", 404)
+      new AppError('There are not orders creted for this user yet', 404)
     );
   }
 
   return res.status(200).json({
-    status: "success",
+    status: 'success',
     result: users.length,
     users,
   });
@@ -62,7 +62,7 @@ exports.findOneUserOrder = catchAsync(async (req, res, next) => {
     where: {
       id,
       userId,
-      status: "active",
+      status: 'active',
     },
     include: [
       {
@@ -80,7 +80,7 @@ exports.findOneUserOrder = catchAsync(async (req, res, next) => {
     );
 
   return res.status(200).json({
-    status: "success",
+    status: 'success',
     order,
   });
 });
@@ -102,8 +102,8 @@ exports.createUser = catchAsync(async (req, res, next) => {
   const token = await generateJWT(user.id);
 
   return res.status(200).json({
-    status: "success",
-    message: "user has been created",
+    status: 'success',
+    message: 'user has been created',
     token,
     user: {
       id: user.id,
@@ -122,7 +122,7 @@ exports.loginUser = catchAsync(async (req, res, next) => {
   const user = await User.findOne({
     where: {
       email: email.toLowerCase().trim(),
-      status: "active",
+      status: 'active',
     },
   });
 
@@ -131,14 +131,14 @@ exports.loginUser = catchAsync(async (req, res, next) => {
   }
 
   if (!(await bcrypt.compare(password, user.password))) {
-    return next(new AppError("Incorrect email or password", 401));
+    return next(new AppError('Incorrect email or password', 401));
   }
 
   const token = await generateJWT(user.id);
 
   res.status(200).json({
-    status: "success",
-    message: "The user has been logged in",
+    status: 'success',
+    message: 'The user has been logged in',
     token,
     user: {
       id: user.id,
@@ -155,14 +155,14 @@ exports.updateUser = catchAsync(async (req, res, next) => {
   const { user } = req;
   const { name, email } = req.body;
 
-  const updateUser =  await user.update({
+  const updateUser = await user.update({
     name: name.toLowerCase().trim(),
     email: email.toLowerCase().trim(),
   });
 
   return res.status(200).json({
-    status: "success",
-    message: "user updated",
+    status: 'success',
+    message: 'user updated',
     updateUser,
   });
 });
@@ -171,10 +171,10 @@ exports.updateUser = catchAsync(async (req, res, next) => {
 exports.deleteUser = catchAsync(async (req, res, next) => {
   const { user } = req;
 
-  await user.update({ status: "disabled" });
+  await user.update({ status: 'disabled' });
 
   return res.status(200).json({
-    status: "success",
-    message: "user has been deleted",
+    status: 'success',
+    message: 'user has been deleted',
   });
 });

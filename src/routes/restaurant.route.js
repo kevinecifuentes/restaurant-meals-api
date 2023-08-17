@@ -4,10 +4,10 @@ const express = require('express');
 const restaurantMiddlewares = require('./../middlewares/restaurant.middleware');
 const protectMiddleware = require('./../middlewares/protect.middleware');
 const validationMiddlewares = require('./../middlewares/validantions.middlewares');
+const reviewMiddlewares = require('./../middlewares/review.middleware');
 
 //controllers
 const restaurantControllers = require('./../controllers/restaurant.controller');
-const reviewMiddlewares = require('./../middlewares/review.middleware');
 
 const router = express.Router();
 
