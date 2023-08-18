@@ -16,10 +16,10 @@ const validFields = (req, res, next) => {
 
 //validaciones al crear un usuario
 exports.validationCreateUser = [
-  body('name').notEmpty().withMessage('Name is Requerid'),
+  body('name').notEmpty().withMessage('Name is required'),
   body('email')
     .notEmpty()
-    .withMessage('Email is requerid')
+    .withMessage('Email is required')
     .isEmail()
     .withMessage('Email must be a corret format'),
   body('password')
@@ -33,18 +33,18 @@ exports.validationCreateUser = [
 exports.validationLoginUser = [
   body('email')
     .notEmpty()
-    .withMessage('Email is requerid')
+    .withMessage('Email is required')
     .isEmail()
     .withMessage('Email must be a corret format'),
-  body('password').notEmpty().withMessage('Password is requerid'),
+  body('password').notEmpty().withMessage('Password is required'),
   validFields,
 ];
 
 exports.validationUpdateUser = [
-  body('name').notEmpty().withMessage('Name is Requerid'),
+  body('name').notEmpty().withMessage('Name is Required'),
   body('email')
     .notEmpty()
-    .withMessage('Email is requerid')
+    .withMessage('Email is required')
     .isEmail()
     .withMessage('Email must be a corret format'),
   validFields,
@@ -53,15 +53,15 @@ exports.validationUpdateUser = [
 //=============================================validaciones de restaurants===========================================================//
 
 exports.validationCreateRestaurants = [
-  body('name').notEmpty().withMessage('Name is Requerid'),
-  body('address').notEmpty().withMessage('Addres is Requerid'),
-  body('rating').notEmpty().withMessage('Rating is Requerid'),
+  body('name').notEmpty().withMessage('Name is Required'),
+  body('address').notEmpty().withMessage('Address is required'),
+  body('rating').notEmpty().withMessage('Rating is Required'),
   validFields,
 ];
 
 exports.validationUpdateRestaurants = [
-  body('name').notEmpty().withMessage('Name is Requerid'),
-  body('address').notEmpty().withMessage('Addres is Requerid'),
+  body('name').notEmpty().withMessage('Name is Required'),
+  body('address').notEmpty().withMessage('Address is Required'),
   validFields,
 ];
 
@@ -71,10 +71,10 @@ exports.validationUpdateRestaurants = [
 exports.validationCreateOrder = [
   body('quantity')
     .notEmpty()
-    .withMessage('Quantity is requerid')
+    .withMessage('Quantity is required')
     .isNumeric()
     .withMessage('This field only accept numbers'),
-  body('meals').notEmpty().withMessage('Meals is requerid'),
+  body('meals').notEmpty().withMessage('Meals is required'),
   validFields,
 ];
 
@@ -82,17 +82,17 @@ exports.validationCreateOrder = [
 
 //validaciones al crear un meals
 exports.validationCreateMeals = [
-  body('name').notEmpty().withMessage('Name is Requerid'),
+  body('name').notEmpty().withMessage('Name is required'),
   body('price')
     .notEmpty()
-    .withMessage('Price is Requerid')
+    .withMessage('Price is required')
     .isNumeric()
     .withMessage('This field only accept numbers'),
   validFields,
 ];
 
 exports.validationUpdateMeals = [
-  body('name').notEmpty().withMessage('Name is Requerid'),
-  body('price').notEmpty().withMessage('Price is Requerid'),
+  body('name').notEmpty().withMessage('Name is required'),
+  body('price').notEmpty().withMessage('Price is required'),
   validFields,
 ];

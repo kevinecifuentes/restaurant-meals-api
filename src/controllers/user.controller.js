@@ -7,84 +7,6 @@ const generateJWT = require('../utils/jwt');
 const { Meal } = require('../models/meal.model');
 const { Restaurant } = require('../models/restaurant.model');
 
-//get all orders mades by users
-exports.findAllUserOrder = catchAsync(async (req, res, next) => {
-  const { id } = req.sessionUser;
-
-  const users = await User.findAll({
-    where: {
-      status: 'active',
-      id,
-    },
-    attributes: ['id', 'name', 'email', 'role'],
-    include: [
-      {
-        model: Order,
-        include: [
-          {
-            model: Meal,
-            include: [
-              {
-                model: Restaurant,
-              },
-            ],
-          },
-        ],
-        where: {
-          status: ['cancelled', 'active', 'completed'],
-        },
-        attributes: {
-          exclude: ['userId'],
-        },
-      },
-    ],
-  });
-
-  if (users.length === 0) {
-    return next(
-      new AppError('There are not orders creted for this user yet', 404)
-    );
-  }
-
-  return res.status(200).json({
-    status: 'success',
-    result: users.length,
-    users,
-  });
-});
-
-//find details about one order
-exports.findOneUserOrder = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-  const { id: userId } = req.sessionUser;
-
-  const order = await Order.findOne({
-    where: {
-      id,
-      userId,
-      status: 'active',
-    },
-    include: [
-      {
-        model: User,
-      },
-    ],
-  });
-
-  if (!order)
-    next(
-      new AppError(
-        `order with id: ${id} is not asociated to the session user`,
-        404
-      )
-    );
-
-  return res.status(200).json({
-    status: 'success',
-    order,
-  });
-});
-
 //create user
 exports.createUser = catchAsync(async (req, res, next) => {
   const { name, email, password, role } = req.body;
@@ -147,6 +69,92 @@ exports.loginUser = catchAsync(async (req, res, next) => {
       role: user.role,
       createdAt: user.createdAt,
     },
+  });
+});
+
+//get all orders mades by users
+exports.findAllUserOrder = catchAsync(async (req, res, next) => {
+  const { id } = req.sessionUser;
+
+  const users = await User.findAll({
+    where: {
+      status: 'active',
+      id,
+    },
+    attributes: ['id', 'name', 'email', 'role'],
+    include: [
+      {
+        model: Order,
+        include: [
+          {
+            model: Meal,
+            include: [
+              {
+                model: Restaurant,
+              },
+            ],
+          },
+        ],
+        where: {
+          status: ['cancelled', 'active', 'completed'],
+        },
+        attributes: {
+          exclude: ['userId'],
+        },
+      },
+    ],
+  });
+
+  if (users.length === 0) {
+    return next(
+      new AppError('There are not orders creted for this user yet', 404)
+    );
+  }
+
+  return res.status(200).json({
+    status: 'success',
+    result: users.length,
+    users,
+  });
+});
+
+//find details about one order
+exports.findOneUserOrder = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const { id: userId } = req.sessionUser;
+
+  const order = await Order.findOne({
+    where: {
+      id,
+      userId,
+      status: 'active',
+    },
+    include: [
+      {
+        model: User,
+      },
+      {
+        model: Meal,
+        include: [
+          {
+            model: Restaurant,
+          },
+        ],
+      },
+    ],
+  });
+
+  if (!order)
+    next(
+      new AppError(
+        `order with id: ${id} is not asociated to the session user`,
+        404
+      )
+    );
+
+  return res.status(200).json({
+    status: 'success',
+    order,
   });
 });
 

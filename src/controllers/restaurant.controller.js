@@ -1,4 +1,3 @@
-const { Meal } = require('../models/meal.model');
 const catchAsync = require('../utils/catchAsync');
 const { Restaurant } = require('./../models/restaurant.model');
 const AppError = require('./../utils/appError');
@@ -8,10 +7,12 @@ const Review = require('./../models/review.model');
 exports.createRestaurant = catchAsync(async (req, res, next) => {
   const { name, address, rating } = req.body;
 
-  const restaurant = await Restaurant.create({ name, address, rating });
-
   if (rating < 1 || rating > 5)
-    next(new AppError('Rating only accept numbers between 1 and 5', 401));
+    return next(
+      new AppError('Rating only accept numbers between 1 and 5', 401)
+    );
+
+  const restaurant = await Restaurant.create({ name, address, rating });
 
   res.status(200).json({
     status: 'success',
@@ -98,7 +99,7 @@ exports.deleteRestaurant = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    message: `restaurant ${restaurant.name} has been deleted`,
+    message: `Restaurant ${restaurant.name} has been deleted`,
   });
 });
 
@@ -110,15 +111,17 @@ exports.createReviewToRestaurant = catchAsync(async (req, res, next) => {
   const { id: restaurantId } = req.params;
   const { id: userId } = req.sessionUser;
 
+  if (rating < 1 || rating > 5)
+    return next(
+      new AppError('Rating only accept numbers between 1 and 5', 401)
+    );
+
   const review = await Review.create({
     comment,
     rating,
     restaurantId,
     userId,
   });
-
-  if (rating < 1 || rating > 5)
-    next(new AppError('Rating only accept numbers between 1 and 5', 401));
 
   res.status(200).json({
     status: 'success',
@@ -142,7 +145,10 @@ exports.updateReview = catchAsync(async (req, res, next) => {
   });
 
   if (review.userId !== sessionUser.id) {
-    return next(new AppError("You don't have permission for edit this review"), 404)
+    return next(
+      new AppError("You don't have permission for edit this review"),
+      404
+    );
   }
 
   if (!restaurant) return next(new AppError('Restaurant not found', 404));
@@ -170,6 +176,7 @@ exports.deleteReview = catchAsync(async (req, res, next) => {
   const restaurant = await Restaurant.findOne({
     where: {
       id: restaurantId,
+      status: 'active',
     },
   });
 

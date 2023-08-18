@@ -1,42 +1,42 @@
-const express = require("express");
+const express = require('express');
 
 //controllers
-const userController = require("./../controllers/user.controller");
+const userController = require('./../controllers/user.controller');
 
 //Middlewares
-const userMiddlware = require("./../middlewares/user.midlleware");
-const validationsMiddleware = require("./../middlewares/validantions.middlewares");
-const protectMiddleware = require("../middlewares/protect.middleware");
+const userMiddlware = require('./../middlewares/user.midlleware');
+const validationsMiddleware = require('./../middlewares/validantions.middlewares');
+const protectMiddleware = require('../middlewares/protect.middleware');
 
 const router = express.Router();
 
 //signup
 router
-  .route("/signup")
+  .route('/signup')
   .post(validationsMiddleware.validationCreateUser, userController.createUser);
 
 //signin
 router
-  .route("/login")
+  .route('/login')
   .post(validationsMiddleware.validationLoginUser, userController.loginUser);
 
 router.use(protectMiddleware.protect);
 
-router.route("/orders").get(userController.findAllUserOrder);
+router.route('/orders').get(userController.findAllUserOrder);
 
-router.route("/orders/:id").get(userController.findOneUserOrder);
+router.route('/orders/:id').get(userController.findOneUserOrder);
 
 router
-  .route("/:id")
+  .route('/:id')
   .patch(
     validationsMiddleware.validationUpdateUser,
     userMiddlware.validUser,
-    protectMiddleware.protectAcount,
+    protectMiddleware.protectAccount,
     userController.updateUser
   )
   .delete(
     userMiddlware.validUser,
-    protectMiddleware.protectAcount,
+    protectMiddleware.protectAccount,
     userController.deleteUser
   );
 

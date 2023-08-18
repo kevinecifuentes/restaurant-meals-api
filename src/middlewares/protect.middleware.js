@@ -42,7 +42,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.protectAcount = catchAsync(async (req, res, next) => {
+exports.protectAccount = catchAsync(async (req, res, next) => {
   const { user, sessionUser } = req;
 
   if (user.id !== sessionUser.id) {

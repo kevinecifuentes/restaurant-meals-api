@@ -1,4 +1,3 @@
-const User = require('./../models/user.model');
 const { Order } = require('./../models/order.model');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
@@ -13,10 +12,11 @@ exports.createOrder = catchAsync(async (req, res, next) => {
   const meal = await Meal.findOne({
     where: {
       id: mealId,
+      status: 'active',
     },
   });
 
-  if (!meal) next(new AppError('Meal not found', 404));
+  if (!meal) return next(new AppError('Meal not found', 404));
 
   const totalPrice = quantity * meal.price;
 
@@ -41,7 +41,6 @@ exports.findMyOrders = catchAsync(async (req, res, next) => {
   const orders = await Order.findAll({
     where: {
       userId,
-      status: ['active', 'completed'],
     },
     include: [
       {
@@ -57,6 +56,7 @@ exports.findMyOrders = catchAsync(async (req, res, next) => {
 
   return res.status(200).json({
     status: 'success',
+    result: orders.length,
     orders,
   });
 });
@@ -66,10 +66,11 @@ exports.completeOrder = catchAsync(async (req, res, next) => {
   const { sessionUser } = req;
   const { order } = req;
 
-  if (order.userId !== sessionUser.id) return next(
-    new AppError("You don't have permission for edit this order"),
-    404
-  );
+  if (order.userId !== sessionUser.id)
+    return next(
+      new AppError("You don't have permission for edit this order"),
+      404
+    );
 
   await order.update({ status: 'completed' });
 
@@ -82,8 +83,14 @@ exports.completeOrder = catchAsync(async (req, res, next) => {
 
 //delete
 exports.deleteOrder = catchAsync(async (req, res, next) => {
-  // const { id: userId } = req.sessionUser;
+  const { sessionUser } = req;
   const { order } = req;
+
+  if (order.userId !== sessionUser.id)
+    return next(
+      new AppError("You don't have permission for edit this order"),
+      404
+    );
 
   await order.update({ status: 'cancelled' });
 
