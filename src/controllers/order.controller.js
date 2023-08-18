@@ -63,8 +63,13 @@ exports.findMyOrders = catchAsync(async (req, res, next) => {
 
 //complete order
 exports.completeOrder = catchAsync(async (req, res, next) => {
-  // const { id: userId } = req.sessionUser;
+  const { sessionUser } = req;
   const { order } = req;
+
+  if (order.userId !== sessionUser.id) return next(
+    new AppError("You don't have permission for edit this order"),
+    404
+  );
 
   await order.update({ status: 'completed' });
 

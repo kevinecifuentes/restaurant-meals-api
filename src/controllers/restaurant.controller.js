@@ -127,10 +127,10 @@ exports.createReviewToRestaurant = catchAsync(async (req, res, next) => {
   });
 });
 
-//TODO Arreglar bug de que solo me deje actualizar o eliminar la orden si el restaurante está asociado a la review o viceversa, independientemente de si existe o no el restaurant.
 //update a review for a restuarant
 exports.updateReview = catchAsync(async (req, res, next) => {
   const { restaurantId } = req.params;
+  const { sessionUser } = req;
   const { review } = req;
   const { comment, rating } = req.body;
 
@@ -140,6 +140,10 @@ exports.updateReview = catchAsync(async (req, res, next) => {
       status: 'active',
     },
   });
+
+  if (review.userId !== sessionUser.id) {
+    return next(new AppError("You don't have permission for edit this review"), 404)
+  }
 
   if (!restaurant) return next(new AppError('Restaurant not found', 404));
 
@@ -160,6 +164,7 @@ exports.updateReview = catchAsync(async (req, res, next) => {
 //delete a review reataurant
 exports.deleteReview = catchAsync(async (req, res, next) => {
   const { restaurantId } = req.params;
+  const { sessionUser } = req;
   const { review } = req;
 
   const restaurant = await Restaurant.findOne({
@@ -167,6 +172,13 @@ exports.deleteReview = catchAsync(async (req, res, next) => {
       id: restaurantId,
     },
   });
+
+  if (review.userId !== sessionUser.id) {
+    return next(
+      new AppError("You don't have permission for delete this review"),
+      404
+    );
+  }
 
   if (!restaurant) return next(new AppError('Restaurant not found', 404));
 
