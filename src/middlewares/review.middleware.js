@@ -12,7 +12,7 @@ exports.findOneReview = catchAsync(async (req, res, next) => {
     },
   });
 
-  if (!review) next(new AppError('Review not found', 404));
+  if (!review) return next(new AppError('Review not found', 404));
 
   req.review = review;
   next();

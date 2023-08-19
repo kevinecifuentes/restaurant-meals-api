@@ -11,7 +11,7 @@ exports.validMeal = catchAsync(async (req, res, next) => {
     },
   });
 
-  if (!meal) next(new AppError(`Meal with id: ${id} not found`, 400));
+  if (!meal) return next(new AppError(`Meal with id: ${id} not found`, 400));
 
   req.meal = meal;
   next();

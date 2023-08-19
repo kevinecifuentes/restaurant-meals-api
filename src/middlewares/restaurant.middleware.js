@@ -13,7 +13,7 @@ exports.validRestaurant = catchAsync(async (req, res, next) => {
     },
   });
 
-  if (!restaurant) next(new AppError('restaurant not found', 404));
+  if (!restaurant) return next(new AppError('restaurant not found', 404));
 
   req.restaurant = restaurant;
   next();

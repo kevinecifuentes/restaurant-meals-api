@@ -40,16 +40,17 @@ exports.finAllMeals = catchAsync(async (req, res, next) => {
 
 //get one meal
 exports.finOneMeal = catchAsync(async (req, res, next) => {
-  /* const { meal } = req; */
   const { id } = req.params;
   const meal = await Meal.findOne({
     where: {
       id,
       status: 'active',
     },
-    include: [{
-      model: Restaurant,
-    }]
+    include: [
+      {
+        model: Restaurant,
+      },
+    ],
   });
 
   res.status(200).json({
