@@ -113,7 +113,6 @@ exports.findAllUserOrder = catchAsync(async (req, res, next) => {
 
   return res.status(200).json({
     status: 'success',
-    result: users.length,
     users,
   });
 });
@@ -147,7 +146,7 @@ exports.findOneUserOrder = catchAsync(async (req, res, next) => {
   if (!order) {
     return next(
       new AppError(
-        `order with id: ${id} is not asociated to the session user`,
+        `order with id: ${id} is not asociated to the session user or does not exist`,
         404
       )
     );

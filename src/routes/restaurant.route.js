@@ -26,8 +26,8 @@ router.use(protectMiddleware.protect);
 router
   .route('/:id')
   .get(
-    restaurantMiddlewares.validRestaurant,
-    restaurantControllers.findOneRestaurants
+    // restaurantMiddlewares.validRestaurant,
+    restaurantControllers.findOneRestaurant
   )
   .patch(
     protectMiddleware.protect,

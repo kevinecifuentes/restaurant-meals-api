@@ -18,11 +18,9 @@ exports.validOrder = catchAsync(async (req, res, next) => {
   }
 
   if (order.status === 'cancelled') {
-    return next(new AppError('You cannot do that with complete orders', 400));
+    return next(new AppError('You cannot do that with cancelled orders', 400));
   }
 
   req.order = order;
   next();
 });
-
-

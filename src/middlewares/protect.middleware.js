@@ -11,7 +11,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {
-    return (token = req.headers.authorization.split(' ')[1]);
+    token = req.headers.authorization.split(' ')[1];
   }
 
   if (!token) {
@@ -54,11 +54,10 @@ exports.protectAccount = catchAsync(async (req, res, next) => {
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.sessionUser.role)) {
+    if (!roles.includes(req.sessionUser.role))
       return next(
         new AppError('You do not have permission to perfom this action.!', 403)
       );
-    }
 
     next();
   };

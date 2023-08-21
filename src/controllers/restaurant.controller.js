@@ -7,10 +7,11 @@ const Review = require('./../models/review.model');
 exports.createRestaurant = catchAsync(async (req, res, next) => {
   const { name, address, rating } = req.body;
 
-  if (rating < 1 || rating > 5)
+  if (rating < 1 || rating > 5) {
     return next(
       new AppError('Rating only accept numbers between 1 and 5', 401)
     );
+  }
 
   const restaurant = await Restaurant.create({ name, address, rating });
 
@@ -44,7 +45,7 @@ exports.findAllRestaurants = catchAsync(async (req, res, next) => {
 });
 
 //find a restaurant
-exports.findOneRestaurants = catchAsync(async (req, res, next) => {
+exports.findOneRestaurant = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
   const restaurant = await Restaurant.findOne({
@@ -64,6 +65,9 @@ exports.findOneRestaurants = catchAsync(async (req, res, next) => {
       },
     ],
   });
+
+  if (!restaurant)
+    return next(new AppError(`Restaurant with id: ${id} not found`, 404));
 
   res.status(200).json({
     status: 'success',
